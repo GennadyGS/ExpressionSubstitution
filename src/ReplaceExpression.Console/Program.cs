@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 using static System.Console;
 
@@ -9,24 +10,20 @@ namespace ReplaceExpression.Console
     {
         private static void Main(string[] args)
         {
-            Expression<Func<IDictionary<string, object>, object>> expression = 
-                record => (int)record["a"] + 5;
-            var fieldExpressionMap = new Dictionary<string, LambdaExpression>
+            var calculatedColumns = new[]
             {
-                ["a"] = (Expression<Func<IDictionary<string, object>, object>>)
-                    (record => (int)record["b"] + (int)record["c"]),
+                new CalculatedColumn<object>("a", r => (int)r["b"] + (int)r["c"]), 
             };
-            var modifiedExpr = expression.ReplaceFields(fieldExpressionMap);
-            WriteLine($"Source expression: {expression}");
-            WriteLine($"Modified expression: {modifiedExpr}");
-            var dict = new Dictionary<string, object>
+            var columnExpressionMap = ImmutableDictionary<string, LambdaExpression>.Empty;
+            var modifiedExpr = columnExpressionMap.ModifyColumns(calculatedColumns);
+            WriteLine($"Modified expression: {modifiedExpr["a"]}");
+            var record = new Dictionary<string, object>
             {
                 ["a"] = 1,
                 ["b"] = 2,
                 ["c"] = 3,
             };
-            WriteLine($"Source expression result: {expression.Compile()(dict)}");
-            WriteLine($"Modified expression result: {modifiedExpr.Compile()(dict)}");
+            WriteLine($"Modified expression result: {((Expression<Func<IReadOnlyDictionary<string, object>, object>>)modifiedExpr["a"]).Compile()(record)}");
         }
     }
 }

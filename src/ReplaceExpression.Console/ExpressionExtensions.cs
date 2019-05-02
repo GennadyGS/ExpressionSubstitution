@@ -8,18 +8,18 @@ namespace ReplaceExpression.Console
 {
     internal static class ExpressionExtensions
     {
-        public static Expression<Func<IDictionary<string, TResult>, TResult>> ReplaceFields<TResult>(
-            this Expression<Func<IDictionary<string, TResult>, TResult>> expression, 
+        public static Expression<Func<IReadOnlyDictionary<string, TResult>, TResult>> ReplaceFields<TResult>(
+            this Expression<Func<IReadOnlyDictionary<string, TResult>, TResult>> expression, 
             IReadOnlyDictionary<string, LambdaExpression> fieldExpressionMap) =>
-                (Expression<Func<IDictionary<string, TResult>, TResult>>)
-                new FieldReplacerVisitor(
-                        fieldExpressionMap, 
-                        expression.Parameters.Single())
-                    .Visit(expression);
+                (Expression<Func<IReadOnlyDictionary<string, TResult>, TResult>>)
+                new FieldReplacerVisitor<TResult>(
+                    fieldExpressionMap, 
+                    expression.Parameters.Single())
+                        .Visit(expression);
 
-        private class FieldReplacerVisitor : ExpressionVisitor
+        private class FieldReplacerVisitor<TResult> : ExpressionVisitor
         {
-            private static readonly MethodInfo GetItemMethodInfo = typeof(IDictionary<string, object>).GetMethod("get_Item");
+            private static readonly MethodInfo GetItemMethodInfo = typeof(IReadOnlyDictionary<string, TResult>).GetMethod("get_Item");
 
             private readonly IReadOnlyDictionary<string, LambdaExpression> _fieldExpressionMap;
             private readonly ParameterExpression _parameter;
