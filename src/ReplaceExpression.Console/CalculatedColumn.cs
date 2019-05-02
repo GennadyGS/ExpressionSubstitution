@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace ReplaceExpression.Console
 {
-    internal class CalculatedColumn<TResult>
+    internal class CalculatedColumn<TExpression> where TExpression : LambdaExpression
     {
-        public CalculatedColumn(string columnName, Expression<Func<IReadOnlyDictionary<string, TResult>, TResult>> expression)
+        public CalculatedColumn(string columnName, TExpression expression)
         {
             ColumnName = columnName;
             Expression = expression;
@@ -14,6 +12,6 @@ namespace ReplaceExpression.Console
 
         public string ColumnName { get; }
 
-        public Expression<Func<IReadOnlyDictionary<string, TResult>, TResult>> Expression { get; }
+        public TExpression Expression { get; }
     }
 }

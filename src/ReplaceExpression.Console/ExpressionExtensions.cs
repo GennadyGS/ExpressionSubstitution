@@ -8,32 +8,36 @@ namespace ReplaceExpression.Console
 {
     internal static class ExpressionExtensions
     {
-        public static LambdaExpression ReplaceFields<TResult>(
-            this LambdaExpression expression,
-            IReadOnlyDictionary<string, LambdaExpression> fieldExpressionMap) =>
-                (LambdaExpression)
-                new FieldReplacerVisitor<TResult>(
+        public static TExpression ReplaceFields<TExpression>(
+            this TExpression expression,
+            IReadOnlyDictionary<string, TExpression> fieldExpressionMap)
+            where TExpression : LambdaExpression =>
+                (TExpression)
+                new FieldReplacerVisitor<TExpression>(
                     fieldExpressionMap, 
-                    expression.Parameters.Single())
+                    expression.Parameters.Single(),
+                    expression.ReturnType)
                         .Visit(expression);
 
-        private class FieldReplacerVisitor<TResult> : ExpressionVisitor
+        private class FieldReplacerVisitor<TExpression> : ExpressionVisitor
+            where TExpression : LambdaExpression
         {
-            private static readonly MethodInfo GetItemMethodInfo = typeof(IReadOnlyDictionary<string, TResult>).GetMethod("get_Item");
-
-            private readonly IReadOnlyDictionary<string, LambdaExpression> _fieldExpressionMap;
+            private readonly IReadOnlyDictionary<string, TExpression> _fieldExpressionMap;
             private readonly ParameterExpression _parameter;
+            private readonly Lazy<MethodInfo> _getItemMethodInfo;
 
             public FieldReplacerVisitor(
-                IReadOnlyDictionary<string, LambdaExpression> fieldExpressionMap,
-                ParameterExpression parameter)
+                IReadOnlyDictionary<string, TExpression> fieldExpressionMap,
+                ParameterExpression parameter,
+                Type returnType)
             {
                 _fieldExpressionMap = fieldExpressionMap;
                 _parameter = parameter;
+                _getItemMethodInfo = new Lazy<MethodInfo>(() => GetItemMethodInfo(returnType));
             }
 
             protected override Expression VisitMethodCall(MethodCallExpression node) =>
-                node.Method == GetItemMethodInfo
+                node.Method == _getItemMethodInfo.Value
                 && node.Object != null
                 && node.Object.NodeType == ExpressionType.Parameter
                 && node.Arguments.Single() is ConstantExpression constant
@@ -44,6 +48,11 @@ namespace ReplaceExpression.Console
                         .Visit(fieldExpression.Body)
                         ?? throw new InvalidOperationException("Expression cannot be null")
                     : base.VisitMethodCall(node);
+
+            private MethodInfo GetItemMethodInfo(Type returnType) =>
+                typeof(IReadOnlyDictionary<,>)
+                    .MakeGenericType(typeof(string), returnType)
+                    .GetMethod("get_Item");
         }
 
         private class ReplaceParameterVisitor : ExpressionVisitor

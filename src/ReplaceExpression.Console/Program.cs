@@ -10,10 +10,9 @@ namespace ReplaceExpression.Console
     {
         private static void Main(string[] args)
         {
-            var calculatedColumns = new[]
-            {
-                new CalculatedColumn<object>("a", r => (int)r["b"] + (int)r["c"]), 
-            };
+            var calculatedColumns = CalculatedColumnFactory.Create<Expression<Func<IReadOnlyDictionary<string, object>, object>>>(
+                ("a", r => (int)r["b"] + (int)r["c"])
+            );
             var columnExpressionMap = ImmutableDictionary<string, Expression<Func<IReadOnlyDictionary<string, object>, object>>>.Empty;
             var modifiedExpr = columnExpressionMap.ModifyColumns(calculatedColumns);
             WriteLine($"Modified expression: {modifiedExpr["a"]}");
