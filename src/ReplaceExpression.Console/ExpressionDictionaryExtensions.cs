@@ -8,24 +8,28 @@ namespace ReplaceExpression.Console
 {
     internal static class ExpressionDictionaryExtensions
     {
-        public static IImmutableDictionary<string, LambdaExpression> ModifyColumns<TResult>(
-            this IImmutableDictionary<string, LambdaExpression> sourceExpressionMap,
-            IEnumerable<CalculatedColumn<TResult>> calculatedColumns) =>
+        public static IImmutableDictionary<string, TExpression> ModifyColumns<TResult, TExpression>(
+            this IImmutableDictionary<string, TExpression> sourceExpressionMap,
+            IEnumerable<CalculatedColumn<TResult>> calculatedColumns)
+            where TExpression : LambdaExpression =>
                 calculatedColumns
                     .Aggregate(
                         sourceExpressionMap,
                         (expressionMap, calculatedColumn) => expressionMap.ModifyColumn(calculatedColumn));
 
-        public static IImmutableDictionary<string, LambdaExpression> ModifyColumn<TResult>(
-            this IImmutableDictionary<string, LambdaExpression> sourceExpressionMap,
-            CalculatedColumn<TResult> calculatedColumn) =>
-                sourceExpressionMap.ModifyColumn(calculatedColumn.ColumnName, calculatedColumn.Expression);
+        public static IImmutableDictionary<string, TExpression> ModifyColumn<TResult, TExpression>(
+            this IImmutableDictionary<string, TExpression> sourceExpressionMap,
+            CalculatedColumn<TResult> calculatedColumn)
+            where TExpression : LambdaExpression =>
+                sourceExpressionMap.ModifyColumn<TResult, TExpression>(calculatedColumn.ColumnName, calculatedColumn.Expression);
 
-        private static IImmutableDictionary<string, LambdaExpression> ModifyColumn<TResult>(
-            this IImmutableDictionary<string, LambdaExpression> sourceExpressionMap,
+        private static IImmutableDictionary<string, TExpression> ModifyColumn<TResult, TExpression>(
+            this IImmutableDictionary<string, TExpression> sourceExpressionMap,
             string columnName,
-            Expression<Func<IReadOnlyDictionary<string, TResult>, TResult>> columnExpression) =>
+            LambdaExpression columnExpression)
+            where TExpression : LambdaExpression =>
                 sourceExpressionMap
-                    .SetItem(columnName, columnExpression.ReplaceFields(sourceExpressionMap));
+                    .SetItem(columnName, (TExpression)columnExpression.ReplaceFields<TResult>(
+                        sourceExpressionMap.ToDictionary(kvp => kvp.Key, kvp => (LambdaExpression)kvp.Value)));
     }
 }

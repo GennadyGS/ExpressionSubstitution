@@ -8,10 +8,10 @@ namespace ReplaceExpression.Console
 {
     internal static class ExpressionExtensions
     {
-        public static Expression<Func<IReadOnlyDictionary<string, TResult>, TResult>> ReplaceFields<TResult>(
-            this Expression<Func<IReadOnlyDictionary<string, TResult>, TResult>> expression, 
+        public static LambdaExpression ReplaceFields<TResult>(
+            this LambdaExpression expression,
             IReadOnlyDictionary<string, LambdaExpression> fieldExpressionMap) =>
-                (Expression<Func<IReadOnlyDictionary<string, TResult>, TResult>>)
+                (LambdaExpression)
                 new FieldReplacerVisitor<TResult>(
                     fieldExpressionMap, 
                     expression.Parameters.Single())

@@ -14,7 +14,7 @@ namespace ReplaceExpression.Console
             {
                 new CalculatedColumn<object>("a", r => (int)r["b"] + (int)r["c"]), 
             };
-            var columnExpressionMap = ImmutableDictionary<string, LambdaExpression>.Empty;
+            var columnExpressionMap = ImmutableDictionary<string, Expression<Func<IReadOnlyDictionary<string, object>, object>>>.Empty;
             var modifiedExpr = columnExpressionMap.ModifyColumns(calculatedColumns);
             WriteLine($"Modified expression: {modifiedExpr["a"]}");
             var record = new Dictionary<string, object>
@@ -23,7 +23,7 @@ namespace ReplaceExpression.Console
                 ["b"] = 2,
                 ["c"] = 3,
             };
-            WriteLine($"Modified expression result: {((Expression<Func<IReadOnlyDictionary<string, object>, object>>)modifiedExpr["a"]).Compile()(record)}");
+            WriteLine($"Modified expression result: {modifiedExpr["a"].Compile()(record)}");
         }
     }
 }
