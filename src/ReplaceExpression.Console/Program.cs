@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq.Expressions;
 using static System.Console;
 
@@ -13,16 +12,15 @@ namespace ReplaceExpression.Console
             var calculatedColumns = CalculatedColumnFactory.Create<Expression<Func<IReadOnlyDictionary<string, object>, object>>>(
                 ("a", r => (int)r["b"] + (int)r["c"])
             );
-            var columnExpressionMap = ImmutableDictionary<string, Expression<Func<IReadOnlyDictionary<string, object>, object>>>.Empty;
-            var modifiedExpr = columnExpressionMap.ModifyColumns(calculatedColumns);
-            WriteLine($"Modified expression: {modifiedExpr["a"]}");
+            var expressionMap = calculatedColumns.ToExpressionMap();
+            WriteLine($"Modified expression: {expressionMap["a"]}");
             var record = new Dictionary<string, object>
             {
                 ["a"] = 1,
                 ["b"] = 2,
                 ["c"] = 3,
             };
-            WriteLine($"Modified expression result: {modifiedExpr["a"].Compile()(record)}");
+            WriteLine($"Modified expression result: {expressionMap["a"].Compile()(record)}");
         }
     }
 }
