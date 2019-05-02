@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace ReplaceExpression.Console
 {
-    internal static class ExpressionDictionaryExtensions
+    internal static class ExpressionMapExtensions
     {
         public static IImmutableDictionary<string, TExpression> ModifyColumns<TExpression>(
             this IImmutableDictionary<string, TExpression> sourceExpressionMap,
