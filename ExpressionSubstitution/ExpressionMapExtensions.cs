@@ -9,7 +9,7 @@ namespace ExpressionSubstitution
     {
         public static IImmutableDictionary<string, TExpression> ModifyColumns<TExpression>(
             this IImmutableDictionary<string, TExpression> sourceExpressionMap,
-            IEnumerable<CalculatedColumn<TExpression>> calculatedColumns)
+            IEnumerable<ICalculatedColumn<TExpression>> calculatedColumns)
             where TExpression : LambdaExpression =>
                 calculatedColumns
                     .Aggregate(
@@ -18,7 +18,7 @@ namespace ExpressionSubstitution
 
         public static IImmutableDictionary<string, TExpression> ModifyColumn<TExpression>(
             this IImmutableDictionary<string, TExpression> sourceExpressionMap,
-            CalculatedColumn<TExpression> calculatedColumn)
+            ICalculatedColumn<TExpression> calculatedColumn)
             where TExpression : LambdaExpression =>
                 sourceExpressionMap.ModifyColumn(calculatedColumn.ColumnName, calculatedColumn.Expression);
 

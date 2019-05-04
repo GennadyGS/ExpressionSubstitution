@@ -6,7 +6,7 @@ namespace ExpressionSubstitution
 {
     public static class CalculatedColumnFactory
     {
-        public static IReadOnlyCollection<CalculatedColumn<TExpression>> Create<TExpression>(
+        public static IReadOnlyCollection<ICalculatedColumn<TExpression>> Create<TExpression>(
             params (string columnName, TExpression expression)[] items)
             where TExpression : LambdaExpression =>
                 items
