@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 
-namespace ExpressionSubstitution.Experiments
+namespace ExpressionSubstitution
 {
-    internal class CalculatedColumn<TExpression> where TExpression : LambdaExpression
+    public class CalculatedColumn<TExpression> where TExpression : LambdaExpression
     {
         public CalculatedColumn(string columnName, TExpression expression)
         {

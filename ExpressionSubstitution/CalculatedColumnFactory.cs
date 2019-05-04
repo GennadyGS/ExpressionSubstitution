@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace ExpressionSubstitution.Experiments
+namespace ExpressionSubstitution
 {
-    internal static class CalculatedColumnFactory
+    public static class CalculatedColumnFactory
     {
         public static IReadOnlyCollection<CalculatedColumn<TExpression>> Create<TExpression>(
             params (string columnName, TExpression expression)[] items)

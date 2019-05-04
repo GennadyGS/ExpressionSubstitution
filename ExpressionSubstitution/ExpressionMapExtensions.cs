@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace ExpressionSubstitution.Experiments
+namespace ExpressionSubstitution
 {
     internal static class ExpressionMapExtensions
     {

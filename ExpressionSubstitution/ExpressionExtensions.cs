@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ExpressionSubstitution.Experiments
+namespace ExpressionSubstitution
 {
     internal static class ExpressionExtensions
     {
