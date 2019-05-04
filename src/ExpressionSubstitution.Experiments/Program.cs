@@ -8,7 +8,7 @@ namespace ExpressionSubstitution.Experiments
     {
         private static void Main(string[] args)
         {
-            var calculatedColumns = CalculatedColumnFactory.Create<Expression<Func<IReadOnlyDictionary<string, object>, object>>>(
+            var calculatedColumns = CalculatedColumnFactory.CreateCalculatedColumns<Expression<Func<IReadOnlyDictionary<string, object>, object>>>(
                 ("a", r => (int)r["b"] + (int)r["c"])
             );
             var expressionMap = calculatedColumns.ToExpressionMap();

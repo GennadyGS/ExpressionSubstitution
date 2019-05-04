@@ -2,7 +2,7 @@
 
 namespace ExpressionSubstitution
 {
-    public class CalculatedColumn<TExpression> : ICalculatedColumn<TExpression> 
+    internal class CalculatedColumn<TExpression> : ICalculatedColumn<TExpression> 
         where TExpression : LambdaExpression
     {
         public CalculatedColumn(string columnName, TExpression expression)
