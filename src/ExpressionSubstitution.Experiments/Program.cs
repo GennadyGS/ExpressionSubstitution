@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using static System.Console;
 
-namespace ReplaceExpression.Console
+namespace ExpressionSubstitution.Experiments
 {
     public class Program
     {
@@ -13,14 +12,14 @@ namespace ReplaceExpression.Console
                 ("a", r => (int)r["b"] + (int)r["c"])
             );
             var expressionMap = calculatedColumns.ToExpressionMap();
-            WriteLine($"Modified expression: {expressionMap["a"]}");
+            Console.WriteLine($"Modified expression: {expressionMap["a"]}");
             var record = new Dictionary<string, object>
             {
                 ["a"] = 1,
                 ["b"] = 2,
                 ["c"] = 3,
             };
-            WriteLine($"Modified expression result: {expressionMap["a"].Compile()(record)}");
+            Console.WriteLine($"Modified expression result: {expressionMap["a"].Compile()(record)}");
         }
     }
 }

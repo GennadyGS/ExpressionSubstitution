@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace ReplaceExpression.Console
+namespace ExpressionSubstitution.Experiments
 {
     internal class CalculatedColumn<TExpression> where TExpression : LambdaExpression
     {

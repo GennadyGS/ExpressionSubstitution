@@ -2,7 +2,7 @@
 using System.Collections.Immutable;
 using System.Linq.Expressions;
 
-namespace ReplaceExpression.Console
+namespace ExpressionSubstitution.Experiments
 {
     internal static class CalculatedColumnsExtensions
     {
