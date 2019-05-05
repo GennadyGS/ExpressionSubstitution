@@ -8,25 +8,25 @@ namespace ExpressionSubstitution
 {
     internal static class ExpressionExtensions
     {
-        public static TExpression ReplaceFields<TExpression>(
+        public static TExpression SubstituteFields<TExpression>(
             this TExpression expression,
             IReadOnlyDictionary<string, TExpression> fieldExpressionMap)
             where TExpression : LambdaExpression =>
                 (TExpression)
-                new FieldReplacerVisitor<TExpression>(
+                new FieldSubstituteVisitor<TExpression>(
                     fieldExpressionMap, 
                     expression.Parameters.Single(),
                     expression.ReturnType)
                         .Visit(expression);
 
-        private class FieldReplacerVisitor<TExpression> : ExpressionVisitor
+        private class FieldSubstituteVisitor<TExpression> : ExpressionVisitor
             where TExpression : LambdaExpression
         {
             private readonly IReadOnlyDictionary<string, TExpression> _fieldExpressionMap;
             private readonly ParameterExpression _parameter;
             private readonly Lazy<MethodInfo> _getItemMethodInfo;
 
-            public FieldReplacerVisitor(
+            public FieldSubstituteVisitor(
                 IReadOnlyDictionary<string, TExpression> fieldExpressionMap,
                 ParameterExpression parameter,
                 Type returnType)
@@ -42,7 +42,7 @@ namespace ExpressionSubstitution
                 && node.Object.NodeType == ExpressionType.Parameter
                 && node.Arguments.Single() is ConstantExpression constant
                 && _fieldExpressionMap.TryGetValue((string)constant.Value, out var fieldExpression)
-                    ? new ReplaceParameterVisitor(
+                    ? new SubstituteParameterVisitor(
                             fieldExpression.Parameters.Single(),
                             _parameter)
                         .Visit(fieldExpression.Body)
@@ -55,20 +55,20 @@ namespace ExpressionSubstitution
                     .GetMethod("get_Item");
         }
 
-        private class ReplaceParameterVisitor : ExpressionVisitor
+        private class SubstituteParameterVisitor : ExpressionVisitor
         {
-            private readonly Expression _replacement;
+            private readonly Expression _substitution;
             private readonly ParameterExpression _parameter;
 
-            public ReplaceParameterVisitor(ParameterExpression parameter, Expression replacement)
+            public SubstituteParameterVisitor(ParameterExpression parameter, Expression substitution)
             {
-                _replacement = replacement;
+                _substitution = substitution;
                 _parameter = parameter;
             }
 
             protected override Expression VisitParameter(ParameterExpression node) =>
                 node == _parameter 
-                    ? _replacement 
+                    ? _substitution 
                     : node;
         }
     }

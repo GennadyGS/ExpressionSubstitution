@@ -28,6 +28,6 @@ namespace ExpressionSubstitution
             TExpression columnExpression)
             where TExpression : LambdaExpression =>
                 sourceExpressionMap
-                    .SetItem(columnName, columnExpression.ReplaceFields(sourceExpressionMap));
+                    .SetItem(columnName, columnExpression.SubstituteFields(sourceExpressionMap));
     }
 }
