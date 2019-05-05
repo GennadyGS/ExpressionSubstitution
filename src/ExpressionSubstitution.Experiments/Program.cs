@@ -8,16 +8,17 @@ namespace ExpressionSubstitution.Experiments
     {
         private static void Main(string[] args)
         {
-            var calculatedColumns = CalculatedColumnFactory.CreateCalculatedColumns<Expression<Func<IReadOnlyDictionary<string, object>, object>>>(
-                ("a", r => (int)r["b"] + (int)r["c"])
+            var calculatedColumns = CalculatedColumnFactory.CreateConditionalCalculatedColumns<IReadOnlyDictionary<string, object>, object>(
+                ("a", r => (bool) r["b"], r => (int)r["c"] + (int)r["d"])
             );
             var expressionMap = calculatedColumns.ToExpressionMap();
             Console.WriteLine($"Modified expression: {expressionMap["a"]}");
             var record = new Dictionary<string, object>
             {
                 ["a"] = 1,
-                ["b"] = 2,
+                ["b"] = false,
                 ["c"] = 3,
+                ["d"] = 4,
             };
             Console.WriteLine($"Modified expression result: {expressionMap["a"].Compile()(record)}");
         }

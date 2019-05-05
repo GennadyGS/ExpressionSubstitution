@@ -13,8 +13,8 @@ namespace ExpressionSubstitution
 
         public ConditionalCalculatedColumn(
             string columnName, 
-            Expression<Func<TArg, TResult>> ifTrueExpression, 
-            Expression<Func<TArg, bool>> condition)
+            Expression<Func<TArg, bool>> condition, 
+            Expression<Func<TArg, TResult>> ifTrueExpression)
         {
             ColumnName = columnName;
             IfTrueExpression = ifTrueExpression;
@@ -33,8 +33,10 @@ namespace ExpressionSubstitution
                     IfTrueExpression.Parameters.Single(),
                     parameter);
                 var ifFalse = Expression.Call(parameter, _getItemMethodInfo.Value, Expression.Constant(ColumnName));
-                return (Expression<Func<TArg, TResult>>) 
-                    Expression.Lambda(Expression.IfThenElse(Condition.Body, ifTrue, ifFalse));
+                var lambdaExpression = Expression.Lambda(
+                    Expression.Condition(Condition.Body, ifTrue, ifFalse),
+                    parameter);
+                return (Expression<Func<TArg, TResult>>) lambdaExpression;
             }
         }
 
