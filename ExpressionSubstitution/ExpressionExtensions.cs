@@ -19,6 +19,15 @@ namespace ExpressionSubstitution
                     expression.ReturnType)
                         .Visit(expression);
 
+        public static TExpression SubstituteParameter<TExpression>(
+            this TExpression expression,
+            ParameterExpression sourceParameter,
+            ParameterExpression targetParameter)
+            where TExpression : Expression =>
+                (TExpression)
+                new SubstituteParameterVisitor(sourceParameter, targetParameter)
+                    .Visit(expression);
+
         private class FieldSubstituteVisitor<TExpression> : ExpressionVisitor
             where TExpression : LambdaExpression
         {
@@ -42,10 +51,9 @@ namespace ExpressionSubstitution
                 && node.Object.NodeType == ExpressionType.Parameter
                 && node.Arguments.Single() is ConstantExpression constant
                 && _fieldExpressionMap.TryGetValue((string)constant.Value, out var fieldExpression)
-                    ? new SubstituteParameterVisitor(
+                    ? fieldExpression.Body.SubstituteParameter(
                             fieldExpression.Parameters.Single(),
                             _parameter)
-                        .Visit(fieldExpression.Body)
                         ?? throw new InvalidOperationException("Expression cannot be null")
                     : base.VisitMethodCall(node);
 

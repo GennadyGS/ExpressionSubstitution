@@ -8,11 +8,11 @@ namespace ExpressionSubstitution
         public CalculatedColumn(string columnName, TExpression expression)
         {
             ColumnName = columnName;
-            Expression = expression;
+            CalcExpression = expression;
         }
 
         public string ColumnName { get; }
 
-        public TExpression Expression { get; }
+        public TExpression CalcExpression { get; }
     }
 }

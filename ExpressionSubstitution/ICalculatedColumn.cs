@@ -7,6 +7,6 @@ namespace ExpressionSubstitution
     {
         string ColumnName { get; }
 
-        TExpression Expression { get; }
+        TExpression CalcExpression { get; }
     }
 }

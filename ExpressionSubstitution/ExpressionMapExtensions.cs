@@ -20,7 +20,7 @@ namespace ExpressionSubstitution
             this IImmutableDictionary<string, TExpression> sourceExpressionMap,
             ICalculatedColumn<TExpression> calculatedColumn)
             where TExpression : LambdaExpression =>
-                sourceExpressionMap.ModifyColumn(calculatedColumn.ColumnName, calculatedColumn.Expression);
+                sourceExpressionMap.ModifyColumn(calculatedColumn.ColumnName, calculatedColumn.CalcExpression);
 
         private static IImmutableDictionary<string, TExpression> ModifyColumn<TExpression>(
             this IImmutableDictionary<string, TExpression> sourceExpressionMap,
